@@ -1,0 +1,31 @@
+[WINDOWS 수정 및 설치]
+
+1.windows에서 바꾼 것
+-font
+-dir 표시 \\로 바꿈
+
+
+3. 설치 모듈
+- youtube-dl
+- ffmpeg
+- python3
+- kivy
+- python module
+  -sound(pyaudio, playsound)
+  -voice(SpeechRecognition, gTTS)
+  -math(numpy=1.19.4(or 3), scipy, matplotlib)
+  -pygame
+
+    python -m pip install pipwin
+    python -m pipwin install pyaudio
+    (python -m pip install pyaudio)
+
+    python -m pip install playsound
+    python -m pip install SpeechRecognition
+    python -m pip install gTTS
+
+    python -m pip install numpy = 1.19.3
+    python -m pip install scipy
+    python -m pip install matplotlib
+
+    python -m pip install pygame
