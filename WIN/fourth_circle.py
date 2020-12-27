@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #-*- coding:utf-8 -*-
-import threading
+import threading, wave
 import cgi, os
 import time
 import webbrowser
