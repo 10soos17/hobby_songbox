@@ -15,9 +15,9 @@ ttsDir = os.path.join(mp3Dir, "2_tts")#tts 폴더
 ignoreFile = ['ffmpeg','.DS_Store','list_data','0_file_data','1_dir_userlist','2_tts']#dir 안에 존재해야만하는 파일 but mp3 아닌 파일 목록
 
 def get_randomFont():
-    #fontList = os.listdir(f'{fontDir}')
-    #todayfont = f'{fontDir}/{fontList[random.randint(0,len(fontList)-1)]}'
-    todayfont = f'{fontDir}/NanumPen.otf'
+    fontList = os.listdir(f'{fontDir}')
+    todayfont = f'{fontDir}/{fontList[random.randint(0,len(fontList)-1)]}'
+    #todayfont = f'{fontDir}/NanumPen.otf'
 
     print(todayfont)
     return todayfont
