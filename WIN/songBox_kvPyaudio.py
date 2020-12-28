@@ -348,7 +348,7 @@ class SoundBarMenu(BoxLayout):
             manager.screen_setting.playUserlist(PLAY_BTN)
 
         elif manager.current == "screen_song":
-            manager.screen_song.play_checkedSong(SONGROWNUM)
+            manager.screen_song.play_checkedSong()
 
         elif manager.current == "screen_singer":
             manager.screen_singer.play_checkedSinger(PLAY_BTN)
@@ -1488,6 +1488,8 @@ class ScreenSong(Screen):
 
     #==============SongScreen 위젯 추가===========================================
     def drawSonglist(self):
+        SONGNOWLISTS = sbl.show_Song()#총 곡
+        SONGNOWLISTS.sort()
         songListNum = len(SONGNOWLISTS)
         #print(f"songListNum:{songListNum}")
 
@@ -2034,20 +2036,15 @@ class ScreenSong(Screen):
         #print(f"checked song:{CHECKEDSONG}")
 
     #==============체크된곡 재생===================================================
-    def play_checkedSong(self, testnum):#페이지 넘버에 따라서 SONGNOWLISTSTEXT에서 검색범위 달라지므로 검색할 번호(testnum) 같이 넘기기
+    def play_checkedSong(self):
         global playTitle,playing #playing은 재생곡의 위젯
 
         playTitle = []
         playing = []
-
-        songListNum = len(SONGNOWLISTS)
-        lastsongNum = songListNum%(SONGROWNUM) #총곡수 % 한페지화면의곡수(15) == 마지막페이지에보여질곡수(ex.11) => 총페이지개수(15+나머지=16)
-
-        if SONGNOWLISTSTEXT[SONGROWNUM-1][0] == f'{SONGNOWLISTS[songListNum-1]}':
-            testnum = lastsongNum
+        SONGNOWLISTSDIC[''] ='' #화면리셋오류때문에 범위 FIXROW로 고정->list 고정길이('')주느라-> dic에도('') 임의값 줌
 
         try:
-            for i in range(testnum):#<---해당페이지에 보여지는 곡만 범위 주기<--수정--len(SONGNOWLISTSTEXT)
+            for i in range(SONGROWNUM):
                 if SONGNOWLISTSDIC[SONGNOWLISTSTEXT[i][2]] in CHECKEDSONG:
                     thisTitle = SONGNOWLISTSTEXT[i][0]
                     #print(f'yescheck {thisTitle}\n')
