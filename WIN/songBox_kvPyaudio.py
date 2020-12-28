@@ -79,7 +79,7 @@ bartextColor =[189/255,183/255,110/255,1]#deepblue+green[30/255,160/255,180/255,
 soundbar_fontsize="22sp"
 menu_fontsize="20sp"
 text_fontsize="17sp"
-todayFont = circle.get_randomFont()
+todayFont = f'{fontDir}/NanumPen.otf'
 
 FIXROW = 20
 #=====사용이유:1. playing 비었을때, 오류 막기 2.img버튼클릭시, obj 대신
@@ -497,9 +497,21 @@ class UpperMenu(BoxLayout):
         todayFont = circle.get_randomFont()
         print(todayFont)
         #ScreenSong().layout_middle.clear_widgets()#차이점-클래스를 다시 그리는 것(하지말것)
-        manager.screen_song.base.clear_widgets()#songlist 레이아웃 지우기
+        soundbar.playBarLayout.clear_widgets()
+        soundbar.drawMylist()
+
+        upperMenu.boxLayout.clear_widgets()
+        upperMenu.drawMylist()
+
+        manager.screen_main.mainScreen.clear_widgets()
+        manager.screen_main.drawMylist()
+
+        manager.screen_setting.base1.clear_widgets()
+        manager.screen_setting.drawMylist()
+
+        manager.screen_song.base.clear_widgets()
         manager.screen_song.drawSonglist()
-        #manager.current = "screen_main"
+
         manager.screen_singer.base1.clear_widgets()
         manager.screen_singer.drawMylist()
 
