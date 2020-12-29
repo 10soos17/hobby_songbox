@@ -975,7 +975,7 @@ class ScreenSetting(Screen):
                 self.layout1_page.add_widget(self.PAGEBTN)
         else:
             self.PAGEBTN = Button(font_name=todayFont,font_size=text_fontsize,text="1",size_hint=(0.1, 0.2), background_color=winColor,color=textColor)
-            SETTINGBTNLIST[i] = self.PAGEBTN
+            SETTINGBTNLIST[1] = self.PAGEBTN
     #==============페이지 번호 클릭시, 해당 화면으로 리셋================================
     def press_settingpageBTN(self, obj):
 
