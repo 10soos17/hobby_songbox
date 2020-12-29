@@ -972,6 +972,9 @@ class ScreenSetting(Screen):
 
                 SETTINGBTNLIST[i] = self.PAGEBTN
                 self.layout1_page.add_widget(self.PAGEBTN)
+        else:
+            self.PAGEBTN = Button(font_name=todayFont,font_size=text_fontsize,text="1",size_hint=(0.1, 0.2), background_color=winColor,color=textColor)
+            SETTINGBTNLIST[i] = self.PAGEBTN
 
     #==============페이지 번호 클릭시, 해당 화면으로 리셋================================
     def press_settingpageBTN(self, obj):
@@ -1602,6 +1605,9 @@ class ScreenSong(Screen):
 
                 SONGBTNLIST[i] = self.SONGBTN
                 self.layout_page.add_widget(self.SONGBTN)
+        else:
+            self.SONGBTN = Button(font_name=todayFont,font_size=text_fontsize,text="1",size_hint=(0.1, 0.2), background_color=winColor,color=textColor)
+            SONGBTNLIST[1] = self.SONGBTN
 
     #==============곡명 수정 popup창 -> sbl.touch_title 호출========================
     def open_titlePopup(self, obj):
@@ -1616,6 +1622,8 @@ class ScreenSong(Screen):
             if SONGNOWLISTSDIC[SONGNOWLISTSTEXT[i][1]]==obj:
                 beforeTitle = SONGNOWLISTSTEXT[i][1]
                 print(beforeTitle)
+                break
+
         self.lowerContent = StackLayout(orientation="lr-tb",padding=10,spacing=10)
         self.titlePopupText=Label(font_name=todayFont,font_size=menu_fontsize,text = 'Write title & singer.',width=40, height=30,size_hint=(1, 0.2),color=textColor)
         self.lowerContent.add_widget(self.titlePopupText)
