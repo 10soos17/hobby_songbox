@@ -139,8 +139,8 @@ def make_singerDic():
                             wrongDic[singer] = wrongList
 
                         else:
-                            shutil.copy(f"{singerListDir}\\{i}\\{k}",f"{mp3Dir}") #전체 곡에 추가하는 방법
-                    #    os.remove(f"{singerListDir}/{i}/{k}") #전체 곡에서도 지우는 방법
+                            #shutil.copy(f"{singerListDir}\\{i}\\{k}",f"{mp3Dir}") #전체 곡에 추가하는 방법
+                            os.remove(f"{singerListDir}/{i}/{k}") #전체 곡에서도 지우는 방법
                 #print(f"wrongList:{wrongList}")
                 wrongList = []
 
