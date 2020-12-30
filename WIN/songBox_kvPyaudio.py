@@ -303,15 +303,13 @@ class SoundBarMenu(BoxLayout):
     def shuffle_song(self,obj):
         global playTitle,playing
 
-        if PLAY_BTN.text == ">":
-            PLAY_BTN.text = "="
-            PAUSE_BTN.color = boxColor
-            PLAY_BTN.color = boxColor
-            for i in playing:
-                i.color = textColor
-            print("stop song")
+        PAUSE_BTN.text = "|||"
+        PAUSE_BTN.color = boxColor
 
         playTitle = sbp.shuffle_song()
+        sbp.get_quit()
+        time.sleep(1)
+
         playnum=0
         thread_one = threading.Thread(target=sbp.get_playThread, args=(playTitle,playing,PLAY_BTN,PLAY_BTN,playnum), daemon=True)
         thread_one.start()
@@ -337,15 +335,20 @@ class SoundBarMenu(BoxLayout):
 
         if PLAY_BTN.text == ">":
             PLAY_BTN.text = "="
-            PAUSE_BTN.color = boxColor
             PLAY_BTN.color = boxColor
+
             for i in playing:
                 i.color = textColor
 
+            if PAUSE_BTN.color == stopColor:
+                PAUSE_BTN.color = boxColor
+                sbp.get_restart()
+
+            sbp.get_quit()
             print("stop song")
 
-        elif manager.current == "screen_setting":
-            manager.screen_setting.playUserlist(PLAY_BTN)
+        #elif manager.current == "screen_setting":
+        #    manager.screen_setting.playUserlist(PLAY_BTN)
 
         elif manager.current == "screen_song":
             manager.screen_song.play_checkedSong()
@@ -371,12 +374,13 @@ class SoundBarMenu(BoxLayout):
 
     #============= PREVBTN > sbp.get_prev > playnum > start thread==============
     def act_PREVBTN(self, PREV_BTN):
-        self.PREV_BTN.color = stopColor
-        time.sleep(1)
-        self.PREV_BTN.color = boxColor
         PAUSE_BTN.color = boxColor
+        #self.PREV_BTN.color = stopColor
+        #self.PREV_BTN.color = boxColor
 
         playnum = sbp.get_prev()
+        sbp.get_quit()
+        time.sleep(1)
 
         print(f"click______playnum:{playnum},playTitle:{playTitle[playnum]}")
         thread_one = threading.Thread(target=sbp.get_playThread, args=(playTitle,playing,PLAY_BTN,tempBtn,playnum), daemon=True)
@@ -384,12 +388,13 @@ class SoundBarMenu(BoxLayout):
 
     #============= PREVBTN > sbp.get_next > playnum > start thread==============
     def act_NEXTBTN(self, NEXT_BTN):
-        self.NEXT_BTN.color = stopColor
-        time.sleep(1)
-        self.NEXT_BTN.color = boxColor
         PAUSE_BTN.color = boxColor
+        #self.NEXT_BTN.color = stopColor
+        #self.NEXT_BTN.color = boxColor
 
         playnum = sbp.get_next()
+        sbp.get_quit()
+        time.sleep(1)
 
         print(f"click______playnum{playnum},playTitle:{playTitle[playnum]}")
         thread_one = threading.Thread(target=sbp.get_playThread, args=(playTitle,playing,PLAY_BTN,tempBtn,playnum), daemon=True)
@@ -742,8 +747,10 @@ class UpperMenu(BoxLayout):
             print(thisTitle)
             playTitle.append(thisTitle)
             #=====strat thread==================================================
-            playnum = 0
+            sbp.get_quit()
+            time.sleep(1)
 
+            playnum = 0
             thread_one = threading.Thread(target = sbp.get_playThread, args = (playTitle,playing,tempBtn,tempBtn,playnum), daemon=True)
             thread_one.start()
 
@@ -1429,7 +1436,7 @@ class ScreenSetting(Screen):
                 os.remove(f"{userListDir}\\{CHECKEDONEUSERLIST}\\{i}")
                 #print(f"removed this song: {userListDir}/{CHECKEDONEUSERLIST}/{i}")
 
-    #==============userlist 옆의 play버튼 클릭시, play thread 시작===================
+    #==============userlist버튼 클릭시, play thread 시작===================
     def playUserlist(self, playBtn):
         global playTitle,playing #playing은 재생곡의 위젯
         #print(f"userlist_playing:{playing}")
@@ -2094,7 +2101,10 @@ class ScreenSong(Screen):
         try:
             playTitle.append(thisTitle)
             print(f"playTitle:{playTitle}")
-            sbp.get_restart()
+
+            sbp.get_quit()
+            time.sleep(1)
+
             playnum=0
             thread_one = threading.Thread(target=sbp.get_playThread, args=(playTitle,playing,PLAY_BTN,TITLE_BTN,playnum), daemon=True)
             thread_one.start()
@@ -2347,7 +2357,9 @@ class ScreenSinger(Screen):
                 playTitle.remove(i)
         print(f"playTitle:{playTitle}")
 
-        sbp.get_restart()
+        sbp.get_quit()
+        time.sleep(1)
+
         playnum = 0
         thread_one = threading.Thread(target = sbp.get_playThread, args = (playTitle,playing,PLAY_BTN,playBtn,playnum), daemon=True)
         thread_one.start()
