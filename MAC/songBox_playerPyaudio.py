@@ -39,6 +39,7 @@ PAUSE_FLAG = False
 OUT_FLAG = False
 DRAG_FLAG = False
 SHUFFLE_FLAG = False
+QUIT_FLAG = False
 
 RUN_DURATION=0
 RUN_T=0
@@ -95,6 +96,7 @@ def play_newsong():
             period = (now - downTime)//3600
             if period <= 48:
                 playTitle.append(i)
+
     return playTitle
 
 #===============1번 사용(class SoundBarMenu의 def start_newsong 함수)==============
@@ -167,9 +169,7 @@ def play_allsong():
 #===============1번 사용(class SoundBarMenu의 def shuffle_song 함수)===============
 #=============== play 곡 shuffle=================================================
 def shuffle_song():
-    global CHANGE_playTitle, SHUFFLE_FLAG
-
-    SHUFFLE_FLAG = True
+    global CHANGE_playTitle
 
     shuffle_playTitle = CHANGE_playTitle[:]
     songNum = len(CHANGE_playTitle)
@@ -192,6 +192,7 @@ def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
     global id, CHANGE_playTitle,CHANGE_playing,GET_playnum,GET_replay, GET_playBtn,GET_onesongBtn, RUN_DURATION,NOW,RUN_NOW, AUDIO,WFILE,CHANGE_stream#, VILIST
 
     AUDIO = pyaudio.PyAudio()
+
     print(f"1111111111_1111111111_____________________1_TH_id: {id}, 2_TH_id(current): {threading.currentThread().ident}\nENTER NEW thread, id!=current\n")
     print(f"=====NEW=====\nplayTitle:{playTitle}\nplaying{playing}")
     print(f"______________________________________________________________________________________________________")
@@ -212,7 +213,7 @@ def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
     #=====play버튼, playing 곡 버튼 색 변경(CHANGE_playing감지)=======================
     if GET_playBtn.text == ">":
 
-        if GET_playBtn == GET_onesongBtn:
+        if GET_playBtn == GET_onesongBtn and GET_playBtn != playBtn:
             GET_playBtn.text = "="
             GET_playBtn.color=boxColor
             for i in playing: #지금
@@ -239,7 +240,7 @@ def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
     print(f"______________________________________________________________________________________________________")
 
     #==============play loop====================================================
-    while GET_replay !=0:
+    while GET_replay != 0:
 
         for i in range(GET_playnum, len(CHANGE_playTitle)):
 
@@ -259,15 +260,16 @@ def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
 
             get_running()
 
-            if id != threading.currentThread().ident: #thisDuration != GET_DURATIONLIST[i]
+            if QUIT_FLAG == True:#id != threading.currentThread().ident
                 print(f"4444444444________________________________1_TH_id: {id},2_TH_id(current): {threading.currentThread().ident}\nfor loop(playlist)_Break before thread, id!=current\n")
                 print(f"______________________________________________________________________________________________________")
                 break
 
-        if id != threading.currentThread().ident: #thisDuration != GET_DURATIONLIST[i]
+        if QUIT_FLAG == True:#id != threading.currentThread().ident
             print(f"4444444444________________________________2_TH_id: {id},2_TH_id(current): {threading.currentThread().ident}\nwhile loop(replay)_Break before thread, id!=current\n")
             print(f"______________________________________________________________________________________________________")
             break
+
         #=============replay check==============================================
         GET_playnum = 0
         GET_replay-=1
@@ -302,8 +304,9 @@ def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
 
 #=================play song(wav file read and write) ===========================
 def get_running():
-    global id, RUN_T, GET_replay, GET_playBtn, GET_onesongBtn, RUN_DURATION, NOW, RUN_NOW, PAUSE_FLAG, DRAG_FLAG,OUT_FLAG,SHUFFLE_FLAG, AUDIO, WFILE,CHUNK, CHANGE_stream, POS, VOLUME
+    global id, RUN_T, GET_replay, GET_playBtn, GET_onesongBtn, RUN_DURATION, NOW, RUN_NOW, PAUSE_FLAG, DRAG_FLAG,OUT_FLAG,QUIT_FLAG, AUDIO, WFILE,CHUNK, CHANGE_stream, POS, VOLUME
 
+    QUIT_FLAG = False
     #CHUNK = 1024*2# *
     CHUNK = 1024
     hz=WFILE.getframerate()
@@ -355,24 +358,11 @@ def get_running():
             print(f"id:{threading.currentThread().ident}, 3333333333_1111111111_____________________GET_onesongBtn_____stop................break")
             break
 
-        #=================OUT_FLAG(PREV_BTN or NEXT_BTN)========================
-        while OUT_FLAG == True:
-            if GET_playnum == 0:
-                RUN_NOW = "This is the first song."
-            elif GET_playnum == len(CHANGE_playTitle)-1:
-                RUN_NOW = "This is the last song."
-            elif len(CHANGE_playTitle) == 1:
-                RUN_NOW = "Only one song."
-            OUT_FLAG=False
-            print("Out of playlist range")
-            break
-
-        #=================PAUSE_FLAG(PAUSE_BTN)=================================
-        while PAUSE_FLAG == True:
+        #=================QUIT_FLAG=============================================
+        if QUIT_FLAG == True:
             CHANGE_stream.stop_stream()
-
-            if PAUSE_FLAG == False:
-                CHANGE_stream.start_stream()
+            CHANGE_stream.close()
+            break
 
         #=================DRAG_FLAG(playbar dag -> pos변화 감지)===================
         if DRAG_FLAG == True:
@@ -380,11 +370,25 @@ def get_running():
             DRAG_FLAG=False
             print(f"DRAG_FLAG_TRUE:loop_POS:{POS}")
 
-        #=================SHUFFLE_FLAG(SHUFFLE_BTN)=============================
-        if SHUFFLE_FLAG == True:
-            SHUFFLE_FLAG = False
+        #=================OUT_FLAG(PREV_BTN or NEXT_BTN)========================
+        if OUT_FLAG == True:
+            if GET_playnum == 0:
+                RUN_NOW = "This is the first song."
+            elif GET_playnum == len(CHANGE_playTitle)-1:
+                RUN_NOW = "This is the last song."
+            elif len(CHANGE_playTitle) == 1:
+                RUN_NOW = "Only one song."
+            time.sleep(1)
+            OUT_FLAG=False
+            print("Out of playlist range")
+            #break
+
+        #=================PAUSE_FLAG(PAUSE_BTN)=================================
+        while PAUSE_FLAG == True:
             CHANGE_stream.stop_stream()
-            break
+
+            if PAUSE_FLAG == False:
+                CHANGE_stream.start_stream()
 
         #=================draw duration=========================================
         run_M=int((RUN_T)//60)
@@ -412,6 +416,7 @@ def get_running():
         VILIST[i].background_color = winColor
         VILIST[i].color = winColor
     """
+    print("sound quit")
     return 0
 
 #=2번 사용=1.ScreenSetting의 def press_settingpageBTN 2.ScreenSong의 press_songBTN=
@@ -457,13 +462,17 @@ def get_replay(replay):
 def get_pause():
     global PAUSE_FLAG
     PAUSE_FLAG = True
-    #mixer.music.pause()=
+    #mixer.music.pause()
     return PAUSE_FLAG
 def get_restart():
     global PAUSE_FLAG
     PAUSE_FLAG = False
     #mixer.music.unpause()
     return PAUSE_FLAG
+#===============QUIT============================================================
+def get_quit():
+    global QUIT_FLAG
+    QUIT_FLAG = True
 #===============SoundBarMenu의 self.prev_BTN=====================================
 def get_prev():
     global GET_playnum, OUT_FLAG
