@@ -152,7 +152,7 @@ class SoundBarMenu(BoxLayout):
         global VOL_TEXT, VOL_BAR, VOL_LABEL, PLAY_BTN, PAUSE_BTN, PLAY_BAR, PLAY_TEXT
 
         #==============volume slider============================================
-        VOL_BAR = Slider(padding=5,min= 0, max=101, value=30)#size_hint=(0.1,0.1)
+        VOL_BAR = Slider(padding=5,min= 0, max=100, value=30)#size_hint=(0.1,0.1)
         VOL_BAR.size_hint=(0.1,0.1)
         VOL_BAR.value_track=True
         VOL_BAR.value_track_width="1sp"
@@ -762,8 +762,7 @@ class ScreenMain(Screen):
 
         self.name = "screen_main"
 
-        self.mainScreen = GridLayout(rows=3,cols=1,row_force_default=True,row_default_height=300,
-                                        size_hint = (1,0.5),padding=[0,0,0,0],spacing=[10,10])
+        self.mainScreen = GridLayout(rows=2,cols=1,size_hint = (1,1),padding=[0,0,0,0],spacing=[10,10])
 
         self.add_widget(self.mainScreen)
         self.drawMylist()
@@ -777,23 +776,20 @@ class ScreenMain(Screen):
         self.scroll.bar_color = boxColor
         #self.scroll.size_hint_min = (100,500)
         self.scroll.size=(Window.width, Window.height)
-        self.scroll.size_hint=(1, None)
+        self.scroll.size_hint=(1, 1)
         #self.scroll.size_hint_y = None
         #self.scroll.padding= 10, 50
-        self.labelLayout = GridLayout(cols=1, spacing=10, size_hint=(1, None),size_hint_y=None)
-        self.labelLayout.bind(minimum_height=self.labelLayout.setter('height'))
+        self.labelLayout = GridLayout(cols=1, spacing=10, size_hint=(1, 1))#,size_hint_y=None)
+        #self.labelLayout.bind(minimum_height=self.labelLayout.setter('height'))
         self.scroll.add_widget(self.labelLayout)
-        self.empty1 = Label(font_name=todayFont,size_hint=(1, 0.05),color=[0,0,0,0])
-
         #self.visualizerLayout = GridLayout(rows=64,cols=1,#size_hint=(1,1),
         #                                padding=[0,0,0,0],spacing=[0,0])
 
         self.timeLabel = Label(text_language='ko_KR',font_name=todayFont,font_size =menu_fontsize,text='',
                                 halign='center',valign="bottom",bold=False,italic=False,
-                                size_hint=(1, 0.2),color=textColor)
+                                size_hint=(1, 1),color=textColor)
 
         #self.mainScreen.add_widget(self.visualizerLayout)
-        self.mainScreen.add_widget(self.empty1)
 
         self.mainScreen.add_widget(self.scroll)
         self.mainScreen.add_widget(self.timeLabel)
@@ -834,8 +830,10 @@ class ScreenMain(Screen):
         self.titleLabel = Label(text="================Playlist===============",
                             font_name=todayFont,font_size =text_fontsize
                             ,size_hint_y=None, height=40,color=textColor)
+
         self.labelLayout.add_widget(self.emptyLabel)
         self.labelLayout.add_widget(self.titleLabel)
+
         for i in playTitle:
             title = i.split('.wav')
             self.playLabel = Label(font_name=todayFont,font_size =text_fontsize
