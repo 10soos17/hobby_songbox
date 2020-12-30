@@ -128,6 +128,7 @@ def make_singerDic():
                         print(f"add new song{newSingerDic[i]}")
 
                 newSongList = []
+
                 #가수 폴더 안에 있는데, 없어진 곡 파악해서 삭제
 
                 for k in thisSingerDir:
@@ -146,8 +147,8 @@ def make_singerDic():
                             wrongDic[singer] = wrongList
 
                         else:
-                            shutil.copy(f"{singerListDir}/{i}/{k}",f"{mp3Dir}") #전체 곡에 추가하는 방법
-                    #    os.remove(f"{singerListDir}/{i}/{k}") #전체 곡에서도 지우는 방법
+                            #shutil.copy(f"{singerListDir}/{i}/{k}",f"{mp3Dir}") #전체 곡에 추가하는 방법
+                            os.remove(f"{singerListDir}/{i}/{k}") #전체 곡에서도 지우는 방법
 
                 print(f"wrongList:{wrongList}")
                 wrongList = []
