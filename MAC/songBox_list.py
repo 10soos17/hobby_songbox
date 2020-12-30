@@ -60,7 +60,11 @@ def touch_title(beforeTitle, song, singer):
 
     beforeTitle = beforeTitle.split('+')
     beforeTitle = beforeTitle[0].split('* ')
-    beforeTitle = beforeTitle[1].split('_')
+
+    if len(beforeTitle) > 1:
+        beforeTitle = beforeTitle[1].split('_')
+    else:
+        beforeTitle = beforeTitle[0].split('_')
 
     beforeSong=beforeTitle[0]
     beforeSinger=beforeTitle[1].split('.wav')
