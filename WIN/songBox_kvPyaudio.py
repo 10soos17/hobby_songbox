@@ -421,8 +421,12 @@ class SoundBarMenu(BoxLayout):
             playnum=0
 
             sbp.get_restart()
+            sbp.get_quit()
+            time.sleep(1)
+
             thread_one = threading.Thread(target = sbp.get_playThread, args = (playTitle,playing,PLAY_BTN,tempBtn,playnum), daemon=True)
             thread_one.start()
+
         elif res == False:
             sbp.get_restart()
 
