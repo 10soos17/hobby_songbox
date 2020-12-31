@@ -189,7 +189,7 @@ def shuffle_song():
 #===============12번 사용=========================================================
 #===============노래재생은 thread 로 재생시키기=======================================
 def get_playThread(playTitle,playing,playBtn,onesongBtn,playnum):
-    global id, CHANGE_playTitle,CHANGE_playing,GET_playnum,GET_replay, GET_playBtn,GET_onesongBtn, RUN_DURATION,NOW,RUN_NOW, AUDIO,WFILE,CHANGE_stream#, VILIST
+    global id, CHANGE_playTitle,CHANGE_playing,GET_playnum,GET_replay, GET_playBtn,GET_onesongBtn, RUN_DURATION,NOW,RUN_NOW, AUDIO,WFILE,CHANGE_stream, winColor,boxColor,textColor, stopColor#, VILIST
 
     AUDIO = pyaudio.PyAudio()
 
@@ -436,6 +436,15 @@ def get_volume(volume):
     global VOLUME
     #VOLUME = pow(2, (sqrt(sqrt(sqrt(volume))) * 192 - 192)/6)
     VOLUME = volume
+#===============1번 사용=class UpperMenu -> def color_pressed=====================
+#===============color change 후 속성 값 유지=======================================
+def set_color(win, box, text, stop):
+    global winColor,boxColor,textColor, stopColor
+    winColor = win
+    boxColor = box
+    textColor = text
+    stopColor = stop
+    return 0
 #===============SoundBarMenu의 play_bar 이동->곡 위치 변경===========================
 def get_pos(val):
     global DRAG_FLAG, POS, WFILE,CHUNK
@@ -464,6 +473,12 @@ def get_pause():
     PAUSE_FLAG = True
     #mixer.music.pause()
     return PAUSE_FLAG
+
+def check_pause():
+    global PAUSE_FLAG
+    return PAUSE_FLAG
+    #mixer.music.pause()
+
 def get_restart():
     global PAUSE_FLAG
     PAUSE_FLAG = False
