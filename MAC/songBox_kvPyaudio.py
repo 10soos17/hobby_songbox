@@ -503,7 +503,8 @@ class UpperMenu(BoxLayout):
         sbl.sync_song()
         sbs.make_singerDic()
         todayFont = circle.get_randomFont()
-        print(todayFont)
+        print(f"todayFont:{todayFont}")
+
         #ScreenSong().layout_middle.clear_widgets()#차이점-클래스를 다시 그리는 것(하지말것)
 
         soundbar.playBarLayout.clear_widgets()
@@ -579,41 +580,44 @@ class UpperMenu(BoxLayout):
         global winColor,boxColor,textColor, stopColor
 
         white = [1,1,1,1]
-        palegrey = [233/255, 233/255, 233/255, 1]
+        palegrey = [213/255, 213/255, 213/255, 1]
         lightgrey = [211/255, 211/255, 211/255, 1]
+        middlegrey = [180/255,185/255,185/255,1]
         deepgrey = [105/255,105/255,105/255,1]
         black = [0,0,0,1]
 
-        lightyellow = [192/255,193/255,190/255,1]
         gold = [192/255,183/255,135/255,1]
-        yellowgreen = [189/255,183/255,110/255,1]
+        lightgold = [1.0, 0.922876498176133, 0.779051589369463, 1.0]
+        deepgold = [0.874934861907243, 0.8118927785182486, 0.10942384932659661, 0.6352266805627929]#[189/255,183/255,110/255,1]
         lightpink = [188/255, 143/255, 143/255, 1]
+
         red = [110/255,0/255,0/255,1]
+        deepred = [0.2,0.0,0.0,1]
         bluegreen = [30/255,160/255,180/255,1]
         #==============set color ===============================================
         if obj.text == "black":
             winColor = black
-            textColor = palegrey
-            boxColor = deepgrey
-            stopColor = white
+            textColor = white
+            boxColor = middlegrey
+            stopColor = deepgrey
 
         elif obj.text == "white":
             winColor = white
             textColor =lightgrey
-            boxColor = deepgrey
-            stopColor =palegrey
+            boxColor = middlegrey
+            stopColor = deepgrey
 
         elif obj.text == "gold":
             winColor = black
-            textColor =white
+            textColor = white
             boxColor = gold
-            stopColor =lightyellow
+            stopColor =deepgold
 
         elif obj.text == "red":
             winColor = gold
-            textColor =white
+            textColor = white
             boxColor = red
-            stopColor =lightyellow
+            stopColor = deepred
 
         elif obj.text == "original":
             winColor = lightgrey
@@ -628,9 +632,27 @@ class UpperMenu(BoxLayout):
             stopColor = deepgrey
 
         Window.clearcolor = winColor
+
+        sbp.set_color(winColor,boxColor,textColor, stopColor)
+        time.sleep(1)
         #==============reset widget(remove -> draw) ============================
+
+        before_vol = VOL_BAR.value
+        before_playbtn_text = PLAY_BTN.text
+
         soundbar.playBarLayout.clear_widgets()
         soundbar.drawMylist()
+
+        VOL_BAR.value = before_vol
+        PLAY_BTN.text = before_playbtn_text
+        if before_playbtn_text == ">":
+            PLAY_BTN.text  = ">"
+            PLAY_BTN.color = stopColor
+        res = sbp.check_pause()
+        if res == True:
+            PAUSE_BTN.color = stopColor
+
+
 
         upperMenu.boxLayout.clear_widgets()
         upperMenu.drawMylist()
@@ -646,6 +668,42 @@ class UpperMenu(BoxLayout):
 
         manager.screen_singer.base1.clear_widgets()
         manager.screen_singer.drawMylist()
+
+        #=====페이지 번호 바꾸고 난 후, 재생 중인 곡 표시위해서, playing 중인 obj의 곡명 저장
+        before_playing = sbp.get_playResult()
+        songs = {}
+        for i in before_playing:
+            tempTitle = i.text.split('.wav')
+            tempTitle = tempTitle[0].split('* ')
+
+            if len(tempTitle) > 1:
+                song = f'{tempTitle[1]}'
+            else:
+                song = f'{i.text}'
+            songs[song] = i
+
+        print(f"playing-song name & obj: {songs}")
+
+        if manager.current == "screen_setting":
+            for i in range(len(NOWLISTSTEXT)):
+                if NOWLISTSTEXT[i][0] in songs.keys():
+                    NOWLISTSDIC[NOWLISTSTEXT[i][0]].color = stopColor
+                    playing.append(NOWLISTSDIC[NOWLISTSTEXT[i][0]])
+                    print(f"NOWLISTSDIC:{NOWLISTSDIC}\nstopColor:{stopColor}")
+
+        elif manager.current == "screen_song":
+            for i in range(len(SONGNOWLISTSTEXT)):
+                if SONGNOWLISTSTEXT[i][0][:-4] in songs.keys():
+                    SONGNOWLISTSDIC[SONGNOWLISTSTEXT[i][0]].color = stopColor
+                    playing.append(SONGNOWLISTSDIC[SONGNOWLISTSTEXT[i][0]])
+                    print(f"SONGNOWLISTSTEXT[i][0][:-4]):{SONGNOWLISTSTEXT[i][0][:-4]}\nstopColor:{stopColor}")
+
+        elif manager.current == "screen_singer":
+            for i in range(len(SINGER_NOWLISTSTEXT)):
+                if SINGER_NOWLISTSTEXT[i][0] in songs.keys():
+                    SINGER_NOWLISTSDIC[SINGER_NOWLISTSTEXT[i][0]].color = stopColor
+                    playing.append(SINGER_NOWLISTSDIC[SINGER_NOWLISTSTEXT[i][0]])
+                    print(f"SINGER_NOWLISTSDIC:{SINGER_NOWLISTSDIC},\nstopColor:{stopColor}")
 
         self.colorPopup.dismiss()
 
