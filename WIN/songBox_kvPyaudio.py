@@ -2155,14 +2155,14 @@ class ScreenSinger(Screen):
         self.layout1_middle.bind(minimum_height=self.layout1_middle.setter('height'),minimum_width=self.layout1_middle.setter('width'))
 
 #####playBtn은 아직 기능 안줌
-        self.titleEmptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-        self.titleEmptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-        self.titleEmptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-        self.topLabel=Label(font_name=todayFont,font_size =menu_fontsize,text ='Singer List',halign="left",valign="top", size_hint_y=None, height=40)#,color=boxColor)
-        self.titleEmptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-        self.titleEmptyLabel5=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-        self.playBtn = Button(font_name=todayFont,font_size =menu_fontsize,text="???", size_hint_y=None, height=40, background_normal = "", background_down = "",background_color=[0,0,0,0],color=[0,0,0,0])
-        self.titleEmptyLabel6=Label(font_name=todayFont,text ='',font_size=30,halign="left",valign="top", size_hint_y=None, height=40)
+        self.titleEmptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+        self.titleEmptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+        self.titleEmptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+        self.topLabel=Label(font_name=todayFont,font_size =menu_fontsize,text ='Singer List',halign="left",valign="top", size_hint_y=None, height=55)#,color=boxColor)
+        self.titleEmptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+        self.titleEmptyLabel5=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+        self.playBtn = Button(font_name=todayFont,font_size =menu_fontsize,text="???", size_hint_y=None, height=55, background_normal = "", background_down = "",background_color=[0,0,0,0],color=[0,0,0,0])
+        self.titleEmptyLabel6=Label(font_name=todayFont,text ='',font_size=30,halign="left",valign="top", size_hint_y=None, height=55)
 
         #####self.playBtn.bind(on_press = self.)
 
@@ -2176,15 +2176,15 @@ class ScreenSinger(Screen):
         self.layout1_top.add_widget(self.titleEmptyLabel6)
 
         for i in range(listNum):
-            self.emptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=40)
-            self.singerListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{SINGER_NOWLISTS[i]}', size_hint_y=None, height=40, background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
-            self.emptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=40)
-            self.emptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=40)
-            self.emptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=40)
-            self.checkBox=CheckBox(size_hint=(1, 0.2),color=textColor,size_hint_y=None, height=40)
-            self.emptyLabel6=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=40)
-            self.showBtn = Button(font_name=todayFont,font_size =text_fontsize,text="show", size_hint_y=None, height=40, background_normal = "",background_color=boxColor,color=textColor)
-            self.emptyLabel7=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=40)
+            self.emptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top", size_hint_y=None, height=55)
+            self.singerListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{SINGER_NOWLISTS[i]}', size_hint_y=None, height=55, background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
+            self.emptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=55)
+            self.emptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=55)
+            self.emptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=55)
+            self.checkBox=CheckBox(size_hint=(1, 0.2),color=textColor,size_hint_y=None, height=55)
+            self.emptyLabel6=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=55)
+            self.showBtn = Button(font_name=todayFont,font_size =text_fontsize,text="show", size_hint_y=None, height=55, background_normal = "",background_color=boxColor,color=textColor)
+            self.emptyLabel7=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint_y=None, height=55)
 
 
             self.checkBox.bind(active=self.checked_song)
