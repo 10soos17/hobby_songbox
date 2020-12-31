@@ -482,6 +482,15 @@ def get_volume(volume):
     global VOLUME
     #VOLUME = pow(2, (sqrt(sqrt(sqrt(volume))) * 192 - 192)/6)
     VOLUME = volume
+#===============1번 사용=class UpperMenu -> def color_pressed=====================
+#===============color change 후 속성 값 유지=======================================
+def set_color(win, box, text, stop):
+    global winColor,boxColor,textColor, stopColor
+    winColor = win
+    boxColor = box
+    textColor = text
+    stopColor = stop
+    return 0
 #===============SoundBarMenu의 play_bar 이동->곡 위치 변경===========================
 def get_pos(val):
     global DRAG_FLAG, POS, WFILE,CHUNK
