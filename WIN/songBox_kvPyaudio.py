@@ -346,7 +346,7 @@ class SoundBarMenu(BoxLayout):
                 PAUSE_BTN.color = boxColor
                 sbp.get_restart()
                 time.sleep(1)
-                
+
             sbp.get_quit()
             print("stop song")
 
@@ -509,8 +509,21 @@ class UpperMenu(BoxLayout):
         todayFont = circle.get_randomFont()
         print(todayFont)
         #ScreenSong().layout_middle.clear_widgets()#차이점-클래스를 다시 그리는 것(하지말것)
+
+        before_vol = VOL_BAR.value
+        before_playbtn_text = PLAY_BTN.text
+
         soundbar.playBarLayout.clear_widgets()
         soundbar.drawMylist()
+
+        VOL_BAR.value = before_vol
+        PLAY_BTN.text = before_playbtn_text
+        if before_playbtn_text == ">":
+            PLAY_BTN.text  = ">"
+            PLAY_BTN.color = stopColor
+        res = sbp.check_pause()
+        if res == True:
+            PAUSE_BTN.color = stopColor
 
         upperMenu.boxLayout.clear_widgets()
         upperMenu.drawMylist()
@@ -526,6 +539,8 @@ class UpperMenu(BoxLayout):
 
         manager.screen_singer.base1.clear_widgets()
         manager.screen_singer.drawMylist()
+        before_vol = VOL_BAR.value
+        before_playbtn_text = PLAY_BTN.text
 
     #==============side menu btn click -> change screen ========================
     def show_screen_main(self,obj):
@@ -651,7 +666,6 @@ class UpperMenu(BoxLayout):
         res = sbp.check_pause()
         if res == True:
             PAUSE_BTN.color = stopColor
-
 
 
         upperMenu.boxLayout.clear_widgets()
