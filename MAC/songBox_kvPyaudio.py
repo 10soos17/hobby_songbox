@@ -509,13 +509,20 @@ class UpperMenu(BoxLayout):
         todayFont = circle.get_randomFont()
         print(f"todayFont:{todayFont}")
 
-        #ScreenSong().layout_middle.clear_widgets()#차이점-클래스를 다시 그리는 것(하지말것)
+        before_vol = VOL_BAR.value
+        before_playbtn_text = PLAY_BTN.text
 
         soundbar.playBarLayout.clear_widgets()
         soundbar.drawMylist()
 
-        upperMenu.boxLayout.clear_widgets()
-        upperMenu.drawMylist()
+        VOL_BAR.value = before_vol
+        PLAY_BTN.text = before_playbtn_text
+        if before_playbtn_text == ">":
+            PLAY_BTN.text  = ">"
+            PLAY_BTN.color = stopColor
+        res = sbp.check_pause()
+        if res == True:
+            PAUSE_BTN.color = stopColor
 
         manager.screen_main.mainScreen.clear_widgets()
         manager.screen_main.drawMylist()
