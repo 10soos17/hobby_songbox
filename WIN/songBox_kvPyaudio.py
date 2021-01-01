@@ -87,6 +87,8 @@ tempObj = Label(font_name=todayFont,text='1')
 playing=[tempObj, ]
 tempLabel=Label(font_name=todayFont,text='ready')
 tempBtn=Button(font_name=todayFont,text='temp')
+BTNnum = 1
+
 get_text=0
 CALL=0
 POS_CALL=0
@@ -1042,6 +1044,7 @@ class ScreenSetting(Screen):
 
     #==============페이지 번호 클릭시, 해당 화면으로 리셋================================
     def press_settingpageBTN(self, obj):
+        global BTNnum
 
         #=====<<,>>버튼이 클릭되었을 경우에, 보여줄 화면 파악하기 위하여
         BTNnum = obj.text#클릭된 버튼의 text
@@ -1375,9 +1378,28 @@ class ScreenSetting(Screen):
 
     #=============sbu.touch_userTitle 결과 받아서 화면 리셋==========================
     def res_touchtitle(self,titlePopup,beforeTitle,newTitle):
-    #    NOWLISTS = sbu.show_userlist()#userlist 목록 불러오기
-    #    NOWLISTS.sort()
-    #    listNum = len(NOWLISTS)#userlist 개수
+        global BTNnum
+
+        beforeDic = {}
+        count = 0
+
+        userDir = os.listdir(f'{userListDir}')
+        userDir.sort()
+        nowtitle = []
+
+        for i in userDir:
+            if i not in ignoreFile:
+                if count < len(NOWLISTSTEXT):
+                    if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
+                        beforeDic[NOWLISTSTEXT[count][0]] = stopColor
+                    else:
+                        beforeDic[NOWLISTSTEXT[count][0]] = textColor
+                else:
+                    beforeDic[i] = textColor
+                count+=1
+
+        print(f"beforeDic:{beforeDic}")
+
         try:
             res = sbu.touch_userTitle(titlePopup,beforeTitle,newTitle)
 
@@ -1386,38 +1408,40 @@ class ScreenSetting(Screen):
             else:
                 print(f'changed.')
 
-                beforeDic = {}
-                for i in range(len(NOWLISTSTEXT)):
-                    beforeDic[NOWLISTSTEXT[i][0]] = NOWLISTSDIC[NOWLISTSTEXT[i][0]].color
-                    if NOWLISTSDIC[NOWLISTSTEXT[i][0]] in playing:
-                        beforeDic[NOWLISTSTEXT[i][0]] = stopColor
-
-                print(f"beforeDic:{beforeDic}")
-
-                self.base1.clear_widgets()
-                self.drawMylist()
-
                 #=====바꾸고 난 후 list 변화 체크
-                newList = []
-                for i in range(len(NOWLISTSTEXT)):
-                    if NOWLISTSTEXT[i][0] not in beforeDic.keys():
-                        newList.append(NOWLISTSTEXT[i][0])
-                print(f"newList:{newList}")
+                tempPageObj = Button(text=f"{BTNnum}",background_color=winColor,color=textColor)
+                self.press_settingpageBTN(tempPageObj)
 
-                nowtitle = []
-                nowobj = []
-                for i in range(len(NOWLISTSTEXT)):
-                    nowtitle.append(NOWLISTSTEXT[i][0])
-                    nowobj.append(NOWLISTSDIC[NOWLISTSTEXT[i][0]])
-                print(f"nowtitle:{nowtitle}")
+                userDir = os.listdir(f'{userListDir}')
+                userDir.sort()
+
+                newList = []
+                afterIndex = 0
+
+                for i in userDir:
+                    if i not in ignoreFile:
+                        if i not in beforeDic.keys():
+                            newList.append(i)
+                            break
+                        afterIndex+=1
+
+                print(f"newList:{newList},afterIndex:{afterIndex}")
+
+
+                afterpageNum = (afterIndex // FIXROW) + 1
+                afterNum = afterIndex % FIXROW
+
+                tempPageObj = Button(text=f"{afterpageNum}",background_color=winColor,color=textColor)
+
+                print(f"afterpageNum:{afterpageNum},afterNum:{afterNum}")
+
+                self.press_settingpageBTN(tempPageObj)
 
                 for i in beforeDic:
-                    if i not in nowtitle:
-                        NOWLISTSDIC[newList[0]].color = beforeDic[i]
+                    if i not in userDir:
                         playing.append(NOWLISTSDIC[newList[0]])
-                        print(f"NOWLISTSDIC[newList[0]]:{NOWLISTSDIC[newList[0]]}")
-                    else:
-                        NOWLISTSDIC[i].color = beforeDic[i]
+                        NOWLISTSDIC[newList[0]].color = beforeDic[i]
+                print(f"NOWLISTSDIC[newList[0]]:{NOWLISTSDIC[newList[0]]}")
 
         except Exception as msg:
                 print(f"{msg}Retry.")
