@@ -345,6 +345,7 @@ class SoundBarMenu(BoxLayout):
             if PAUSE_BTN.color == stopColor:
                 PAUSE_BTN.color = boxColor
                 sbp.get_restart()
+                time.sleep(1)
 
             sbp.get_quit()
             print("stop song")
