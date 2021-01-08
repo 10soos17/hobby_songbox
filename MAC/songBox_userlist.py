@@ -4,6 +4,7 @@ import csv
 import os, shutil
 import time
 
+
 #nowDate =  time.strftime("%Y_%m_%d")#global workingDir,baseDir,mp3Dir,dataDir,userListDir,ignoreFile
 baseDir = os.getcwd()#os.path.abspath('py_song')#workging 폴더
 mp3Dir = os.path.join(baseDir, "songBox_list")#노래 폴더
@@ -26,12 +27,33 @@ def make_userlist(listName):
 
 #===============class ScreenSetting>def listDelete_pressed(userlist dir 삭제 시)==
 def delete_userlist(listName):
-    try:
-        shutil.rmtree(f'{userListDir}/{listName}', ignore_errors=True) #강제삭제
-        return True
-    except Exception as msg:
-            res = f"{msg}failed."
-            return False
+
+    userlist = sorted(os.listdir(f'{userListDir}'))
+
+    for i in userlist:
+
+        if i not in ignoreFile:
+            delNum = i.split('. ')
+            startNum = int(delNum[0])
+            if delNum[1] == listName:
+
+                try:
+                    shutil.rmtree(f'{userListDir}/{startNum}. {listName}', ignore_errors=True) #강제삭제
+
+                    #renumbering
+                    userlist = sorted(os.listdir(f'{userListDir}'))
+
+                    for i in range(startNum,len(userlist)):
+                        print(userlist[i])
+                        if userlist[i] not in ignoreFile:
+                            changeNum = userlist[i].split('. ')
+                            os.rename(f'{userListDir}/{userlist[i]}', f'{userListDir}/{int(changeNum[0])-1}. {changeNum[1]}')
+
+                    return True
+
+                except Exception as msg:
+                        res = f"{msg}failed."
+                        return False
 
 #===============3번 사용==========================================================
 #===1,2.class ScreenSetting>def drawMylist, def press_settingBTN 3.class ScreenSong>def add_userlist
@@ -62,7 +84,8 @@ def touch_userTitle(self, beforeTitle, newTitle):
     for i in os.listdir(f'{userListDir}'):
         print(i)
         if i == beforeTitle:
-            os.rename(f'{userListDir}/{i}',f'{userListDir}/{newTitle}')
+            delNum = i.split(". ")
+            os.rename(f'{userListDir}/{i}',f'{userListDir}/{delNum[0]}. {newTitle}')
             return True
     return False
 
