@@ -290,9 +290,9 @@ class SoundBarMenu(BoxLayout):
     def start_newsong(self):
         global playTitle,playing
         #playTitle = sbp.play_newsong()
-        #playTitle = sbp.play_newsongRandom()
+        playTitle = sbp.play_newsongRandom()
         #playTitle = sbp.play_songRandom()
-        playTitle = sbp.play_allsong()
+        #playTitle = sbp.play_allsong()
         #test = SoundLoader.load(f'{mp3Dir}/test_1.mp3')
         #playTitle = ["test_1.mp3","test_1.mp3","test_1.mp3"]
         playing = [tempObj,]
@@ -1318,9 +1318,13 @@ class ScreenSetting(Screen):
         print("List Name:", self.listNameText.text)
         listName = f'{self.listNameText.text}'
         try:
-            res = sbu.make_userlist(listName)
 
-            if res == False:
+            before = sbu.show_userlist()
+            num = len(before)
+            listName = f'{num+1}. {listName}'
+            after = sbu.make_userlist(listName)
+
+            if after == False:
                 print("Can't created. there is same list.")
             else:
                 print(f'{listName} was created.')
@@ -1358,10 +1362,34 @@ class ScreenSetting(Screen):
     def press_listDelete(self, obj):
         print("List Name:", self.listNameText.text)
         listName = f'{self.listNameText.text}'
+
+        beforeDic = {}
+        count = 0
+
+        userDir = os.listdir(f'{userListDir}')
+        userDir.sort()
+        nowtitle = []
+
+        for i in userDir:
+            if i not in ignoreFile:
+                if count < len(NOWLISTSTEXT):
+                    userlistName = NOWLISTSTEXT[count][0].split(". ")
+                    if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
+                        beforeDic[userlistName[1]] = stopColor
+                    else:
+                        beforeDic[userlistName[1]] = textColor
+                else:
+                    userlistName = i.split(". ")
+                    beforeDic[userlistName[1]] = textColor
+                count+=1
+        print(f"beforeDic:{beforeDic}")
+
         try:
-            res = sbu.delete_userlist(listName)
-            if res == False:
+            after = sbu.delete_userlist(listName)
+
+            if after == False:
                 print("Can't delete. there is no such listname.")
+
             else:
                 print(f'{listName} was deleted.')
 
@@ -1383,11 +1411,28 @@ class ScreenSetting(Screen):
 
                 #print(f"playing-song name & obj: {songs}")
 
-                for i in range(len(NOWLISTSTEXT)):
-                    if NOWLISTSTEXT[i][0] in songs.keys():
-                        NOWLISTSDIC[NOWLISTSTEXT[i][0]].color = stopColor
-                        playing.append(NOWLISTSDIC[NOWLISTSTEXT[i][0]])
-                        print(f"NOWLISTSDIC:{NOWLISTSDIC}\nstopColor:{stopColor}")
+                #=====바꾸고 난 후 list 변화 체크
+                userDir = os.listdir(f'{userListDir}')
+                userDir.sort()
+
+                newList = []
+                delNumList = []
+
+                for i in userDir:
+                    if i not in ignoreFile:
+                        userlistName = i.split(". ")
+                        delNumList.append(userlistName[1])
+                        newList.append(i)
+
+                print(f"delNumList:{delNumList},newList:{newList}")
+
+                for i in range(len(delNumList)):
+                    NOWLISTSDIC[newList[i]].color = beforeDic[delNumList[i]]
+                    if NOWLISTSDIC[newList[i]].color == stopColor:
+                        playing.append(NOWLISTSDIC[newList[i]])
+
+                print(f"NOWLISTSDIC[newList[i]]:{NOWLISTSDIC[newList[i]]}")
+
 
         except Exception as msg:
                 self.makeListPopup.title = f"{msg}Retry."
@@ -1439,12 +1484,14 @@ class ScreenSetting(Screen):
         for i in userDir:
             if i not in ignoreFile:
                 if count < len(NOWLISTSTEXT):
+                    userlistName = NOWLISTSTEXT[count][0].split(". ")
                     if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
-                        beforeDic[NOWLISTSTEXT[count][0]] = stopColor
+                        beforeDic[userlistName[1]] = stopColor
                     else:
-                        beforeDic[NOWLISTSTEXT[count][0]] = textColor
+                        beforeDic[userlistName[1]] = textColor
                 else:
-                    beforeDic[i] = textColor
+                    userlistName = i.split(". ")
+                    beforeDic[userlistName[1]] = textColor
                 count+=1
 
         print(f"beforeDic:{beforeDic}")
@@ -1465,16 +1512,19 @@ class ScreenSetting(Screen):
                 userDir.sort()
 
                 newList = []
+                delNumList = []
                 afterIndex = 0
 
                 for i in userDir:
                     if i not in ignoreFile:
-                        if i not in beforeDic.keys():
+                        userlistName = i.split(". ")
+                        delNumList.append(userlistName[1])
+                        if userlistName[1] not in beforeDic.keys():
                             newList.append(i)
-                            break
+
                         afterIndex+=1
 
-                print(f"newList:{newList},afterIndex:{afterIndex}")
+                print(f"delNumList:{delNumList},newList:{newList},afterIndex:{afterIndex}")
 
 
                 afterpageNum = (afterIndex // FIXROW) + 1
@@ -1487,7 +1537,7 @@ class ScreenSetting(Screen):
                 self.press_settingpageBTN(tempPageObj)
 
                 for i in beforeDic:
-                    if i not in userDir:
+                    if i not in delNumList:
                         playing.append(NOWLISTSDIC[newList[0]])
                         NOWLISTSDIC[newList[0]].color = beforeDic[i]
                 print(f"NOWLISTSDIC[newList[0]]:{NOWLISTSDIC[newList[0]]}")
