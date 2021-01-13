@@ -1613,11 +1613,13 @@ class ScreenSetting(Screen):
             if str(BTNnum) == str(pageLISTNOpop) and lastLISTNOpop != 0:
                 sub = (FIXROW-lastLISTNOpop)
                 overIndex = endIndex-sub
-                title = DELLISTS[i-1].split(".wav")
+
                 if i > overIndex:#마지막페이지의 userlist 곡 수보다 i 가 크면, 위젯을 안보이도록 처리
                     self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'',halign="left",valign="top",size_hint=(0.9, 0.2), color=[0,0,0,0])
                     self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=winColor)
                 else:
+                    title = DELLISTS[i-1].split(".wav")
+
                     self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{title[0]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
                     self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=winColor)
 
@@ -1625,6 +1627,8 @@ class ScreenSetting(Screen):
                     DELLISTSTEXT[count][0] = f'{DELLISTS[i-1]}'
                     DELLISTSDIC[DELLISTSTEXT[count][0]]=self.checkboxBtn
             else:
+                title = DELLISTS[i-1].split(".wav")
+
                 self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{title[0]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
                 self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=winColor)
 
