@@ -538,6 +538,7 @@ class UpperMenu(BoxLayout):
 
         manager.screen_singer.base1.clear_widgets()
         manager.screen_singer.drawMylist()
+
     #==============side menu btn click -> change screen ========================
     def show_screen_main(self,obj):
         manager.current = "screen_main"
@@ -663,16 +664,14 @@ class UpperMenu(BoxLayout):
         if res == True:
             PAUSE_BTN.color = stopColor
 
-
-
         upperMenu.boxLayout.clear_widgets()
         upperMenu.drawMylist()
 
         manager.screen_main.mainScreen.clear_widgets()
         manager.screen_main.drawMylist()
 
-        manager.screen_setting.base1.clear_widgets()
-        manager.screen_setting.drawMylist()
+        #manager.screen_setting.base1.clear_widgets()
+        manager.screen_setting.press_settingpageBTN(tempObj)
 
         manager.screen_song.base.clear_widgets()
         manager.screen_song.drawSonglist()
@@ -849,8 +848,6 @@ class ScreenMain(Screen):
 
     #==============draw widgets=================================================
     def drawMylist(self):
-        #global viList
-
         #==============(scroll)playlistlabel====================================
         self.scroll = ScrollView(smooth_scroll_end=10,scroll_type=['bars'],bar_width='3dp', scroll_wheel_distance=100, do_scroll_x = False, do_scroll_y = True)
         self.scroll.bar_color = boxColor
@@ -862,35 +859,15 @@ class ScreenMain(Screen):
         self.labelLayout = GridLayout(cols=1, spacing=10, size_hint=(1, None))#,size_hint_y=None)
         self.labelLayout.bind(minimum_height=self.labelLayout.setter('height'))
         self.scroll.add_widget(self.labelLayout)
-        #self.visualizerLayout = GridLayout(rows=64,cols=1,#size_hint=(1,1),
-        #                                padding=[0,0,0,0],spacing=[0,0])
-
         self.timeLabel = Label(text_language='ko_KR',font_name=todayFont,font_size =menu_fontsize,text='',
                                 halign='center',valign="bottom",bold=False,italic=False,
                                 size_hint=(1, 1),color=textColor)
-
-        #self.mainScreen.add_widget(self.visualizerLayout)
 
         self.mainScreen.add_widget(self.scroll)
         self.mainScreen.add_widget(self.timeLabel)
 
         Clock.schedule_interval(self.timeAdd, 0.5)
         Clock.schedule_interval(self.show_playList, 0.5)
-
-        #==============visualizer test==========================================
-
-        #viList = [""]*32
-
-        #for i in range(len(viList)):
-        #    btn = Button(font_name=todayFont,font_size=soundbar_fontsize, text="",# pos_hint =  {"x": .1, "top": .1, "y":.0,"bottom":.0},size_hint=(0,1),#,size_hint=(0.01,0.01),
-        #                        background_normal = "", background_down = "",background_color=[0,0,0,0],color=[0,0,0,0])#bartextColor)
-            #btn2 = Button(font_name=todayFont,font_size=soundbar_fontsize, text="",size_hint=(0.1,1),# pos_hint =  {"x": .1, "top": .1, "y":.0,"bottom":.0},size_hint=(0,1),#,size_hint=(0.01,0.01),
-            #                    background_normal = "", background_down = "",background_color=winColor,color=winColor)#bartextColor)
-        #    viList[i] = btn
-
-        #    self.visualizerLayout.add_widget(btn)
-        #    #self.visualizerLayout.add_widget(btn2)
-
 
     #==============draw time > circle.current_time()============================
     def timeAdd(self,obj):
@@ -921,7 +898,6 @@ class ScreenMain(Screen):
             self.playLabel.text=f'{title[0]}\n'
             self.labelLayout.add_widget(self.playLabel)
 
-
 #==============ScreenSetting(다운로드팝업, userlist관리, 색상)========================
 class ScreenSetting(Screen):
     def __init__(self, **kwargs):
@@ -937,8 +913,8 @@ class ScreenSetting(Screen):
         SETTINGBTNLIST = ['']*12#페이지버튼(지정한 목록 15개 초과시)
         POPDELBTNLIST = ['']*12#userlist popup페이지버튼(지정한 목록 15개 초과시)
 
-        NOWLISTS = sbu.show_userlist()#userlist 목록 불러오기
-        NOWLISTS.sort()
+        NOWLISTS ={}
+        NOWLISTS = sbu.show_userlist()
 
         self.base1 = BoxLayout(padding=5,spacing=5,size_hint=(1,1), orientation = 'vertical')
         self.add_widget(self.base1)
@@ -949,7 +925,6 @@ class ScreenSetting(Screen):
     def drawMylist(self):
         #global playList, playing
         NOWLISTS = sbu.show_userlist()#userlist 목록 불러오기
-        NOWLISTS.sort()
         listNum = len(NOWLISTS)#userlist 개수
 
         self.layout1_top = GridLayout(rows=1,cols=9,padding=5,spacing=5,size_hint=(1, 0.05))
@@ -983,8 +958,9 @@ class ScreenSetting(Screen):
         for i in range(ROWNUM):#보여줄 목록의 개수만큼 위젯추가
 
             if i <= listNum-1:#초과되지 않는 부분은 보이도록 처리
+
                 self.emptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top", width=40, height=30,size_hint=(1, 0.2))
-                self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{NOWLISTS[i]}', width=10, height=10, size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
+                self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{i+1}. {NOWLISTS[str(i+1)]}', width=10, height=10, size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
                 self.emptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                 self.emptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                 self.emptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
@@ -993,8 +969,8 @@ class ScreenSetting(Screen):
                 self.emptyLabel6=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                 self.emptyLabel7=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
 
-                NOWLISTSTEXT[i][0] = f'{NOWLISTS[i]}'
-                NOWLISTSTEXT[i][1] = f'{NOWLISTS[i]}+add/sub'
+                NOWLISTSTEXT[i][0] = f'{NOWLISTS[str(i+1)]}'
+                NOWLISTSTEXT[i][1] = f'{NOWLISTS[str(i+1)]}+add/sub'
                 self.userListBtn.bind(on_press=self.playUserlist)#userlist의 곡 재생을 위한 함수 호출
                 self.editBtn.bind(on_press=self.del_userlistSong)#userlist의 곡 삭제를 위한 함수 호출
                 NOWLISTSDIC[NOWLISTSTEXT[i][0]]=self.userListBtn
@@ -1054,6 +1030,7 @@ class ScreenSetting(Screen):
         else:
             self.PAGEBTN = Button(font_name=todayFont,font_size=text_fontsize,text="1",size_hint=(0.1, 0.2), background_color=winColor,color=textColor)
             SETTINGBTNLIST[1] = self.PAGEBTN
+
     #==============페이지 번호 클릭시, 해당 화면으로 리셋================================
     def press_settingpageBTN(self, obj):
         global BTNnum
@@ -1066,7 +1043,6 @@ class ScreenSetting(Screen):
             nowpageA = 0
 
         NOWLISTS = sbu.show_userlist()#userlist 목록 불러오기
-        NOWLISTS.sort()
         listNum = len(NOWLISTS)
 
         pageLISTNO = listNum//(ROWNUM) #총userlist수(ex.236) // 한페지화면의userlist수(15) == 총페이지개수(15, 나머지있으면 16)
@@ -1130,9 +1106,9 @@ class ScreenSetting(Screen):
                     self.emptyLabel6=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                     self.emptyLabel7=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
 
-                else:#NOWLISTS의 인덱스가 i-1임을 유의
+                else:#NOWLISTS의 인덱스가 i임을 유의
                     self.emptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
-                    self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{NOWLISTS[i-1]}',size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
+                    self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{i}. {NOWLISTS[str(i)]}',size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
                     self.emptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                     self.emptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                     self.emptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
@@ -1143,14 +1119,14 @@ class ScreenSetting(Screen):
 
                     self.userListBtn.bind(on_press=self.playUserlist)#userlist의 곡 재생을 위한 함수 호출
                     self.editBtn.bind(on_press=self.del_userlistSong)#userlist의 곡 삭제를 위한 함수 호출
-                    NOWLISTSTEXT[count][0] = f'{NOWLISTS[i-1]}'#userlist 이름, obj 인덱스는 count 임을 유의
-                    NOWLISTSTEXT[count][1] = f'{NOWLISTS[i-1]}+add/sub'
+                    NOWLISTSTEXT[count][0] = f'{NOWLISTS[str(i)]}'#userlist 이름, obj 인덱스는 count 임을 유의
+                    NOWLISTSTEXT[count][1] = f'{NOWLISTS[str(i)]}+add/sub'
                     NOWLISTSDIC[NOWLISTSTEXT[count][0]]=self.userListBtn
                     NOWLISTSDIC[NOWLISTSTEXT[count][1]]=self.editBtn
 
             else:
                 self.emptyLabel1=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
-                self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{NOWLISTS[i-1]}',size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
+                self.userListBtn=Button(font_name=todayFont,font_size =text_fontsize,text=f'{i}. {NOWLISTS[str(i)]}',size_hint=(0.9, 0.03), background_normal = "", background_down = "",background_color=[0,0,0,0],color=textColor)
                 self.emptyLabel2=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                 self.emptyLabel3=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
                 self.emptyLabel4=Label(font_name=todayFont,text ='',halign="left",valign="top",size_hint=(1, 0.2))
@@ -1161,8 +1137,8 @@ class ScreenSetting(Screen):
 
                 self.userListBtn.bind(on_press=self.playUserlist)#userlist의 곡 재생을 위한 함수 호출
                 self.editBtn.bind(on_press=self.del_userlistSong)#userlist의 곡 삭제를 위한 함수 호출
-                NOWLISTSTEXT[count][0] = f'{NOWLISTS[i-1]}'
-                NOWLISTSTEXT[count][1] = f'{NOWLISTS[i-1]}+add/sub'
+                NOWLISTSTEXT[count][0] = f'{NOWLISTS[str(i)]}'
+                NOWLISTSTEXT[count][1] = f'{NOWLISTS[str(i)]}+add/sub'
                 NOWLISTSDIC[NOWLISTSTEXT[count][0]]=self.userListBtn
                 NOWLISTSDIC[NOWLISTSTEXT[count][1]]=self.editBtn
 
@@ -1184,10 +1160,12 @@ class ScreenSetting(Screen):
             names[name] = i
         print(f"userlist_playing-listname & obj: {names}")
         #=====페이지 번호 바뀌어도, 재생 중인 곡 표시 & stop하면 작동하도록, 바뀐 obj를 playing에 저장
-        for i in range(len(NOWLISTSTEXT)):
-            if NOWLISTSTEXT[i][0] in names.keys():
-                NOWLISTSDIC[NOWLISTSTEXT[i][0]].color = stopColor
-                playing.append(NOWLISTSDIC[NOWLISTSTEXT[i][0]])
+        for i in NOWLISTS:
+            title = f'{i}. {NOWLISTS[i]}'
+            if title in names.keys():
+                NOWLISTSDIC[NOWLISTS[i]].color = stopColor
+                playing.append(NOWLISTSDIC[NOWLISTS[i]])
+                print(f"stop:{NOWLISTS[i]}")
 
     #==============userlist dir에 들어있는 곡 선택 삭제 ==============================
     def del_userlistSong(self, obj):
@@ -1205,7 +1183,6 @@ class ScreenSetting(Screen):
                 #print(CHECKEDONEUSERLIST)
 
         DELLISTS = sbu.show_oneUserlist(CHECKEDONEUSERLIST)
-        #DELLISTS.sort()
         delListNum = len(DELLISTS)
         #print(f'DELLISTS:{DELLISTS}')
         self.delUserlistSongPopup = Popup(title='',
@@ -1236,7 +1213,6 @@ class ScreenSetting(Screen):
         self.layoutpop_top.add_widget(self.popText)
         self.layoutpop_top.add_widget(self.delBtn)
         self.layoutpop_top.add_widget(self.editBtn)
-
 
         for i in range(DELROWNUM):
             if i <= delListNum-1:
@@ -1366,28 +1342,25 @@ class ScreenSetting(Screen):
         beforeDic = {}
         count = 0
 
-        userDir = os.listdir(f'{userListDir}')
-        userDir.sort()
+        userDir = sbu.show_userlist()#os.listdir(f'{userListDir}')
+
         nowtitle = []
 
         for i in userDir:
-            if i not in ignoreFile:
-                if count < len(NOWLISTSTEXT):
-                    userlistName = NOWLISTSTEXT[count][0].split(". ")
-                    if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
-                        beforeDic[userlistName[1]] = stopColor
-                    else:
-                        beforeDic[userlistName[1]] = textColor
+            if count < len(NOWLISTSTEXT):
+                if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
+                    beforeDic[NOWLISTSTEXT[count][0]] = stopColor
                 else:
-                    userlistName = i.split(". ")
-                    beforeDic[userlistName[1]] = textColor
-                count+=1
+                    beforeDic[NOWLISTSTEXT[count][0]] = textColor
+            else:
+                beforeDic[i] = textColor
+            count+=1
         print(f"beforeDic:{beforeDic}")
 
         try:
-            after = sbu.delete_userlist(listName)
+            res = sbu.delete_userlist(listName)
 
-            if after == False:
+            if res == False:
                 print("Can't delete. there is no such listname.")
 
             else:
@@ -1412,22 +1385,17 @@ class ScreenSetting(Screen):
                 #print(f"playing-song name & obj: {songs}")
 
                 #=====바꾸고 난 후 list 변화 체크
-                userDir = os.listdir(f'{userListDir}')
-                userDir.sort()
+                userDir = sbu.show_userlist()
 
                 newList = []
-                delNumList = []
 
                 for i in userDir:
-                    if i not in ignoreFile:
-                        userlistName = i.split(". ")
-                        delNumList.append(userlistName[1])
-                        newList.append(i)
+                    newList.append(userDir[i])
 
-                print(f"delNumList:{delNumList},newList:{newList}")
+                print(f"newList:{newList}")
 
                 for i in range(len(delNumList)):
-                    NOWLISTSDIC[newList[i]].color = beforeDic[delNumList[i]]
+                    NOWLISTSDIC[newList[i]].color = beforeDic[newList[i]]
                     if NOWLISTSDIC[newList[i]].color == stopColor:
                         playing.append(NOWLISTSDIC[newList[i]])
 
@@ -1449,10 +1417,6 @@ class ScreenSetting(Screen):
               separator_height=0.5,
               separator_color=textColor)
 
-        for i in range(ROWNUM):
-            if NOWLISTSDIC[NOWLISTSTEXT[i][1]] == listobj:
-                beforeTitle = NOWLISTSTEXT[i][0]
-
         self.lowerContent = StackLayout(orientation="lr-tb",padding=10,spacing=10)
         self.titlePopupText=Label(font_name=todayFont,font_size=menu_fontsize,text = 'Write new title',width=40, height=30,size_hint=(1, 0.2),color=textColor)
         self.lowerContent.add_widget(self.titlePopupText)
@@ -1463,7 +1427,7 @@ class ScreenSetting(Screen):
 
         self.submit = Button(font_name=todayFont,font_size=menu_fontsize,text="Edit",width=40, height=30,size_hint=(0.33, 0.16), background_normal = "", background_color=boxColor,color=textColor)
 
-        self.submit.bind(on_press=lambda instance : self.res_touchtitle(self.titlePopup,beforeTitle,self.newTitle))
+        self.submit.bind(on_press=lambda instance : self.res_touchtitle(listobj,self.newTitle))
 
         self.lowerContent.add_widget(self.submit)
         self.titlePopup.add_widget(self.lowerContent)
@@ -1471,76 +1435,67 @@ class ScreenSetting(Screen):
         self.titlePopup.open()
 
     #=============sbu.touch_userTitle 결과 받아서 화면 리셋==========================
-    def res_touchtitle(self,titlePopup,beforeTitle,newTitle):
+    def res_touchtitle(self,listobj,newTitle):
         global BTNnum
 
         beforeDic = {}
         count = 0
 
-        userDir = os.listdir(f'{userListDir}')
-        userDir.sort()
+        userDir = sbu.show_userlist()
+
         nowtitle = []
 
         for i in userDir:
-            if i not in ignoreFile:
-                if count < len(NOWLISTSTEXT):
-                    userlistName = NOWLISTSTEXT[count][0].split(". ")
-                    if NOWLISTSDIC[NOWLISTSTEXT[count][0]] in playing:
-                        beforeDic[userlistName[1]] = stopColor
-                    else:
-                        beforeDic[userlistName[1]] = textColor
+            if int(i) < len(NOWLISTSTEXT):
+                if NOWLISTSDIC[userDir[i]] in playing:
+                    beforeDic[userDir[i]] = stopColor
                 else:
-                    userlistName = i.split(". ")
-                    beforeDic[userlistName[1]] = textColor
-                count+=1
+                    beforeDic[userDir[i]] = textColor
+            else:
+                beforeDic[userDir[i]] = textColor
 
-        print(f"beforeDic:{beforeDic}")
+        #print(f"beforeDic:{beforeDic}")
 
         try:
-            res = sbu.touch_userTitle(titlePopup,beforeTitle,newTitle)
 
-            if res == False:
-                print("Can't rename.")
-            else:
-                print(f'changed.')
+            for i in range(ROWNUM):
+                #print(f'listobj:{listobj},\nNOWLISTSTEXT[i][1]:{NOWLISTSTEXT[i][1]},NOWLISTSDIC[NOWLISTSTEXT[i][1]]:{NOWLISTSDIC[NOWLISTSTEXT[i][1]]}')
+                if NOWLISTSDIC[NOWLISTSTEXT[i][1]] == listobj:
+                    beforeTitle = NOWLISTSTEXT[i][0]
+                    #print(f'beforeTitle:{beforeTitle}')
 
-                #=====바꾸고 난 후 list 변화 체크
-                tempPageObj = Button(text=f"{BTNnum}",background_color=winColor,color=textColor)
-                self.press_settingpageBTN(tempPageObj)
+                    res = sbu.touch_userTitle(beforeTitle,newTitle)
 
-                userDir = os.listdir(f'{userListDir}')
-                userDir.sort()
+                    if res == False:
+                        print("Can't rename.")
+                        break
+                    else:
+                        print(f'changed.')
 
-                newList = []
-                delNumList = []
-                afterIndex = 0
+                        #=====바꾸고 난 후 list 변화 체크
+                        tempPageObj = Button(text=f"{BTNnum}",background_color=winColor,color=textColor)
+                        self.press_settingpageBTN(tempPageObj)
 
-                for i in userDir:
-                    if i not in ignoreFile:
-                        userlistName = i.split(". ")
-                        delNumList.append(userlistName[1])
-                        if userlistName[1] not in beforeDic.keys():
-                            newList.append(i)
+                        userDir = sbu.show_userlist()
 
-                        afterIndex+=1
+                        newList = []
+                        delNumList = []
 
-                print(f"delNumList:{delNumList},newList:{newList},afterIndex:{afterIndex}")
+                        for i in userDir:
+                            delNumList.append(userDir[i])
+                            if userDir[i] not in beforeDic.keys():
+                                newList.append(userDir[i])
 
+                        for i in beforeDic:
+                            if i not in delNumList:
+                                if beforeDic[i] == stopColor:
+                                    playing.append(NOWLISTSDIC[newList[0]])
+                                else:
+                                    NOWLISTSDIC[newList[0]].color = beforeDic[i]
 
-                afterpageNum = (afterIndex // FIXROW) + 1
-                afterNum = afterIndex % FIXROW
+                        self.press_settingpageBTN(tempPageObj)
 
-                tempPageObj = Button(text=f"{afterpageNum}",background_color=winColor,color=textColor)
-
-                print(f"afterpageNum:{afterpageNum},afterNum:{afterNum}")
-
-                self.press_settingpageBTN(tempPageObj)
-
-                for i in beforeDic:
-                    if i not in delNumList:
-                        playing.append(NOWLISTSDIC[newList[0]])
-                        NOWLISTSDIC[newList[0]].color = beforeDic[i]
-                print(f"NOWLISTSDIC[newList[0]]:{NOWLISTSDIC[newList[0]]}")
+                        #print(f"NOWLISTSDIC[newList[0]]:{NOWLISTSDIC[newList[0]]}")
 
         except Exception as msg:
                 print(f"{msg}Retry.")
@@ -1561,8 +1516,8 @@ class ScreenSetting(Screen):
 
         #=====페이지버튼 추가하기 전에 계산============================================
         DELLISTS = sbu.show_oneUserlist(CHECKEDONEUSERLIST)
-        DELLISTS.sort()
         delListNum = len(DELLISTS)
+
         pageLISTNOpop = delListNum//(DELROWNUM) #총userlist수(ex.236) // 한페지화면의userlist수(15) == 총페이지개수(15, 나머지있으면 16)
         lastLISTNOpop = delListNum%(DELROWNUM) #총userlist수 % 한페지화면의userlist수(15) == 마지막페이지에보여질userlist수(ex.11) => 총페이지개수(15+나머지=16)
         if lastLISTNOpop > 0:
@@ -1660,12 +1615,17 @@ class ScreenSetting(Screen):
 
     #==============userlist팝업창의 '-'버튼 클릭하면, 체크된 곡 삭제=====================
     def del_pressed(self, obj):
-        #print(f"CHECKEDONEUSERLIST:{CHECKEDONEUSERLIST}\nCHECKEDONEUSERSONG:{CHECKEDONEUSERSONG}")
-        for i in os.listdir(f"{userListDir}/{CHECKEDONEUSERLIST}"):
-            if i in CHECKEDONEUSERSONG:
-                os.remove(f"{userListDir}/{CHECKEDONEUSERLIST}/{i}")
-                #print(f"removed this song: {userListDir}/{CHECKEDONEUSERLIST}/{i}")
+        #print(f"CHECKEDONEUSERLIST:{CHECKEDONEUSERLIST}\nCHECKEDONEUSERSONG:{CHECKEDONEUSERSONG},NOWLISTS:{NOWLISTS}")
+        nowUserlist = sbu.show_userlist()
+        for i in nowUserlist:
+            print(nowUserlist[i])
+            if nowUserlist[i] == CHECKEDONEUSERLIST:
+                for j in os.listdir(f"{userListDir}/{i}. {CHECKEDONEUSERLIST}"):
+                    if j in CHECKEDONEUSERSONG:
+                        os.remove(f"{userListDir}/{i}. {CHECKEDONEUSERLIST}/{j}")
+                print(f"removed this song: {userListDir}/{i}. {CHECKEDONEUSERLIST}/{j}")
         self.delUserlistSongPopup.dismiss()
+
     #==============userlist 버튼 클릭시, play thread 시작===================
     def playUserlist(self, playBtn):
         global playTitle,playing #playing은 재생곡의 위젯
@@ -1678,12 +1638,19 @@ class ScreenSetting(Screen):
         playList = []
         playing = []
 
-        for i in range(len(NOWLISTSTEXT)):
-            if NOWLISTSDIC[NOWLISTSTEXT[i][0]] == playBtn:
-                thisTitle = NOWLISTSTEXT[i][0]
-                playTitle = os.listdir(f"{userListDir}/{thisTitle}")
-                playing.append(playBtn)
-                break
+        nowUserlist = sbu.show_userlist()
+
+        for i in nowUserlist:
+            try:
+                if NOWLISTSDIC[nowUserlist[i]] == playBtn:
+                    playTitle = os.listdir(f"{userListDir}/{i}. {nowUserlist[i]}")
+                    playing.append(playBtn)
+                    break
+
+            except Exception as msg:
+                res = f"{msg} failed."
+                continue
+
         print(f"playTitle{playTitle}")
         playTitle.sort()
         for i in playTitle:
@@ -1842,6 +1809,7 @@ class ScreenSong(Screen):
         else:
             self.SONGBTN = Button(font_name=todayFont,font_size=text_fontsize,text="1",size_hint=(0.1, 0.2), background_color=winColor,color=textColor)
             SONGBTNLIST[1] = self.SONGBTN
+
     #==============곡명 수정 popup창 -> sbl.touch_title 호출========================
     def open_titlePopup(self, obj):
         self.titlePopup = Popup(title='',
@@ -2069,7 +2037,6 @@ class ScreenSong(Screen):
         global POPROWNUM, POPLISTS, POPLISTSTEXT, POPLISTSDIC
         POPROWNUM = FIXROW
         POPLISTS = sbu.show_userlist()
-        POPLISTS.sort()
         poplistNum = len(POPLISTS)
         POPLISTSTEXT = [['']*2 for x in range(POPROWNUM)]
         POPLISTSDIC = {}
@@ -2094,11 +2061,11 @@ class ScreenSong(Screen):
 
         for i in range(POPROWNUM):
             if i <= poplistNum-1:
-                self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{POPLISTS[i]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
+                self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{i+1}. {POPLISTS[str(i+1)]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
                 self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=winColor)
 
                 self.checkboxBtn.bind(active=self.checked_userlist)
-                POPLISTSTEXT[i][0] = f'{POPLISTS[i]}'
+                POPLISTSTEXT[i][0] = f'{POPLISTS[str(i+1)]}'
                 POPLISTSDIC[POPLISTSTEXT[i][0]]=self.checkboxBtn
 
             if i > poplistNum-1:
@@ -2197,6 +2164,7 @@ class ScreenSong(Screen):
         #=====화면 리셋===========================================================
         count = 0
         self.layoutpop1_middle.clear_widgets()
+
         for i in range(startIndex,endIndex+1):#그때그때 인덱스를 지정, 보여줄 화면
             if str(BTNnum) == str(pageLISTNOpopadd) and lastLISTNOpopadd != 0:
                 sub = (FIXROW-lastLISTNOpopadd)
@@ -2204,19 +2172,19 @@ class ScreenSong(Screen):
                 if i > overIndex:#마지막페이지의 userlist dir수보다 i 가 크면, 위젯을 안보이도록 처리
                     self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'',halign="left",valign="top",size_hint=(0.9, 0.2), color=[0,0,0,0])
                     self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=[0,0,0,0])
-                else:#POPLISTS 의 인덱스가 i-1임을 유의, POPLISTSTEXT,POPLISTSDIC의 인덱스는 count임을 유의
-                    self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{POPLISTS[i-1]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
-                    self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=[0,0,0,0])
+                else:#POPLISTS 의 인덱스가 i임을 유의, POPLISTSTEXT,POPLISTSDIC의 인덱스는 count임을 유의
+                    self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{i+1}. {POPLISTS[str(i)]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
+                    self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=[0,0,0,1])
 
                     self.checkboxBtn.bind(active=self.checked_userlist)
-                    POPLISTSTEXT[count][0] = f'{POPLISTS[i-1]}'
+                    POPLISTSTEXT[count][0] = f'{POPLISTS[str(i)]}'
                     POPLISTSDIC[POPLISTSTEXT[count][0]]=self.checkboxBtn
             else:
-                self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{POPLISTS[i-1]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
-                self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=[0,0,0,0])
+                self.userListLabel=Label(font_name=todayFont,font_size=text_fontsize,text = f'{i+1}. {POPLISTS[str(i)]}',halign="left",valign="top",size_hint=(0.9, 0.2), color=[1,1,1,1])
+                self.checkboxBtn=CheckBox(size_hint=(0.1, 0.2),color=[0,0,0,1])
 
                 self.checkboxBtn.bind(active=self.checked_userlist)
-                POPLISTSTEXT[count][0] = f'{POPLISTS[i-1]}'
+                POPLISTSTEXT[count][0] = f'{POPLISTS[str(i)]}'
                 POPLISTSDIC[POPLISTSTEXT[count][0]]=self.checkboxBtn
 
             self.layoutpop1_middle.add_widget(self.userListLabel)
@@ -2341,7 +2309,7 @@ class ScreenSong(Screen):
                 break
         try:
             playTitle.append(thisTitle)
-            print(f"playTitle:{playTitle}")
+            #print(f"playTitle:{playTitle}")
 
             sbp.get_quit()
             time.sleep(1)
@@ -2353,7 +2321,6 @@ class ScreenSong(Screen):
         except Exception as msg:
             print(f"{msg}retry.")
             #print(playTitle)
-
 
 #==============(Scroll)class ScreenSinger=======================================
 class ScreenSinger(Screen):
@@ -2431,9 +2398,11 @@ class ScreenSinger(Screen):
             SINGER_NOWLISTSTEXT[i][0] = f'{SINGER_NOWLISTS[i]}'
             SINGER_NOWLISTSTEXT[i][1] = f'{SINGER_NOWLISTS[i]}+add/sub'
             SINGER_NOWLISTSTEXT[i][2] = f'{SINGER_NOWLISTS[i]}+checkbox'
+
             self.checkBox.bind(active=self.checked_song)
             self.singerListBtn.bind(on_press=self.play_singerlist)#singerlist의 곡 재생을 위한 함수 호출
             self.showBtn.bind(on_press=self.open_singerSongPopup)#singerlist의 곡 보기
+
             SINGER_NOWLISTSDIC[SINGER_NOWLISTSTEXT[i][0]]=self.singerListBtn
             SINGER_NOWLISTSDIC[SINGER_NOWLISTSTEXT[i][1]]=self.showBtn
             SINGER_NOWLISTSDIC[SINGER_NOWLISTSTEXT[i][2]]=self.checkBox
