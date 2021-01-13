@@ -28,81 +28,82 @@ def make_userlist(listName):
 #===============class ScreenSetting>def listDelete_pressed(userlist dir 삭제 시)==
 def delete_userlist(listName):
 
-    userlist = sorted(os.listdir(f'{userListDir}'))
+    userlist = show_userlist()
 
     for i in userlist:
 
-        if i not in ignoreFile:
-            delNum = i.split('. ')
-            startNum = int(delNum[0])
-            if delNum[1] == listName:
+        if userlist[i] == listName:
+            startNum = int(i)
+            try:
+                shutil.rmtree(f'{userListDir}/{startNum}. {userlist[i]}', ignore_errors=True) #강제삭제
 
-                try:
-                    shutil.rmtree(f'{userListDir}/{startNum}. {listName}', ignore_errors=True) #강제삭제
+                #renumbering
+                userlist = show_userlist()
 
-                    #renumbering
-                    userlist = sorted(os.listdir(f'{userListDir}'))
+                for j in userlist:
+                    print(userlist[j])
+                    if int(j) > startNum:
+                        os.rename(f'{userListDir}/{int(j)}. {userlist[j]}', f'{userListDir}/{int(j)-1}. {userlist[j]}')
 
-                    for i in range(startNum,len(userlist)):
-                        print(userlist[i])
-                        if userlist[i] not in ignoreFile:
-                            changeNum = userlist[i].split('. ')
-                            os.rename(f'{userListDir}/{userlist[i]}', f'{userListDir}/{int(changeNum[0])-1}. {changeNum[1]}')
+                return True
 
-                    return True
-
-                except Exception as msg:
-                        res = f"{msg}failed."
-                        return False
+            except Exception as msg:
+                    res = f"{msg}failed."
+                    return False
 
 #===============3번 사용==========================================================
 #===1,2.class ScreenSetting>def drawMylist, def press_settingBTN 3.class ScreenSong>def add_userlist
 def show_userlist():
-    myLists = []
+    myLists = {}
     for i in os.listdir(f"{userListDir}"):
         if i not in ignoreFile:
-            myLists.append(i)
+            numbering = i.split(". ")
+            myLists[str(numbering[0])] = numbering[1]
+
     return myLists
 
 #===============class ScreenSetting>def del_userlistSong(popup에서 userlist dir 삭제 시)
 def show_oneUserlist(checkedOneUserlist):
+    nowUserlist = show_userlist()
     thisOnesongList = ''
-    for i in os.listdir(f"{userListDir}"):
-        if checkedOneUserlist == i:
-            thisOnesongList = os.listdir(f"{userListDir}/{i}")
+    for i in nowUserlist:
+        if checkedOneUserlist == nowUserlist[i]:
+            thisOnesongList = os.listdir(f"{userListDir}/{i}. {nowUserlist[i]}")
             #print(thisOnesongList)
             break
+
     return thisOnesongList
 
 #===class SettingScreen > def open_userTitlePopup>def res_touchTitle에서 호출됨====
 #===============userlist title 변경==============================================
-def touch_userTitle(self, beforeTitle, newTitle):
-    newTitle = newTitle.text
-    beforeTitle = beforeTitle
+def touch_userTitle(before, new):
+    newTitle = new.text
+    beforeTitle = before
 
-    os.chdir(f'{userListDir}')
-    for i in os.listdir(f'{userListDir}'):
-        print(i)
-        if i == beforeTitle:
-            delNum = i.split(". ")
-            os.rename(f'{userListDir}/{i}',f'{userListDir}/{delNum[0]}. {newTitle}')
+    nowUserlist = show_userlist()
+
+    #os.chdir(f'{userListDir}')
+
+    for i in nowUserlist:
+        if nowUserlist[i] == beforeTitle:
+            os.rename(f'{userListDir}/{i}. {nowUserlist[i]}',f'{userListDir}/{i}. {newTitle}')
             return True
     return False
 
 #===============class ScreenSong>def add_pressed(체크된 곡 add한 것을 실제로 userlist dir안에 copy)
 def copy_checkedsongTOuserlist(CHECKEDUSERLIST,CHECKEDSONGTITLE):
-    nowUserlist = os.listdir(f"{userListDir}")
+    nowUserlist = show_userlist()#os.listdir(f"{userListDir}")
     nowSonglist = os.listdir(f"{mp3Dir}")
     #print(nowUserlist,nowSonglist)
     #print(CHECKEDUSERLIST,CHECKEDSONGTITLE)
     for i in nowUserlist:
-        if i in CHECKEDUSERLIST and i not in ignoreFile:
+        if nowUserlist[i] in CHECKEDUSERLIST and nowUserlist[i] not in ignoreFile:
             print(i)
             for j in nowSonglist:
                 if j in CHECKEDSONGTITLE and j not in ignoreFile:
                     print(j)
                     try:
-                        shutil.copy(f"{mp3Dir}/{j}",f"{userListDir}/{i}")
+                        shutil.copy(f"{mp3Dir}/{j}",f"{userListDir}/{i}. {nowUserlist[i]}")
                     except Exception as msg:
                         res = f"{msg} failed."
                         return False
