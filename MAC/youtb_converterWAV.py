@@ -8,6 +8,7 @@ import time, os
 
 import songBox_list as sbl
 import songBox_singerlist as sbs
+import songBox_sql as sb_sql
 
 baseDir = os.getcwd()#os.path.abspath('py_song')#workging 폴더
 mp3Dir = os.path.join(baseDir, "songBox_list")#노래 폴더
@@ -18,12 +19,15 @@ userListDir = os.path.join(mp3Dir, "1_dir_userlist")#userlist 폴더
 singerListDir = os.path.join(mp3Dir, "2_dir_singerlist")#userlist 폴더
 ttsDir = os.path.join(mp3Dir, "3_tts")#tts 폴더
 ignoreFile = ['ffmpeg','.DS_Store','list_data','0_file_data','1_dir_userlist','2_dir_singerlist','3_tts']#dir 안에 존재해야만하는 파일 but mp3 아닌 파일 목록
+filetype = "wav"
 
 #===============get chrome driver===============================================
 def get_driver():
    try:
+      print(f"get_try")
       driver = webdriver.Chrome(f'{baseDir}/chromedriver')
    except:
+      print(f"get_tryerror")
       driver = webdriver.Chrome(f'{baseDir}/chromedriver.exe')
    return driver
 
@@ -34,6 +38,7 @@ def change_Song(song, singer):
     os.chdir(f'{baseDir}')
     myDriver = get_driver() # os 고려하기
     myDriver.get(f'https://www.youtube.com/results?search_query={song} {singer}')
+    print(f"getsong_try")
     #myDriver.find_element_by_id('img').click()
     url = myDriver.find_element_by_xpath('//*[@id="video-title"]')
     urlAddress=url.get_attribute('href')
@@ -66,6 +71,8 @@ def change_Song(song, singer):
                 os.rename(i, f'{song}_{singer}.wav')
                 sbl.sync_song() #song
                 sbs.make_singerDic() #singer
+                sb_sql.down_song(song, singer, filetype) #save mysql
+
 
         time.sleep(20)
 
