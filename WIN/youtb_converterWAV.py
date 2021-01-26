@@ -66,6 +66,7 @@ def change_Song(song, singer):
                 os.rename(i, f'{song}_{singer}.wav')
                 sbl.sync_song() #song
                 sbs.make_singerDic() #singer
+                sb_sql.down_song(song, singer, filetype) #save mysql
 
         time.sleep(20)
 
