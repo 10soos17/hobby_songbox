@@ -64,9 +64,9 @@ def change_Song(song, singer):
         for i in os.listdir(f'{mp3Dir}'):
             if i not in beforeDown:
                 os.rename(i, f'{song}_{singer}.wav')
+                sb_sql.down_song(song, singer, filetype) #save mysql
                 sbl.sync_song() #song
                 sbs.make_singerDic() #singer
-                sb_sql.down_song(song, singer, filetype) #save mysql
 
         time.sleep(20)
 
