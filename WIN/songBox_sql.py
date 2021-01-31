@@ -90,6 +90,7 @@ def sync_sqlWebsong():
         if singer not in sql_singerlist:
             sql_query = "insert into singer(name,created) values(%s,NOW())"
             cursor.execute(sql_query,(singer))
+            conn.commit()
             sql_singerlist.append(singer)
             print(f"singer:{singer}")
             time.sleep(1)
