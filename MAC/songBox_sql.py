@@ -90,6 +90,7 @@ def sync_sqlWebsong():
         if singer not in sql_singerlist:
             sql_query = "insert into singer(name,created) values(%s,NOW())"
             cursor.execute(sql_query,(singer))
+            conn.commit()
             sql_singerlist.append(singer)
             print(f"singer:{singer}")
             time.sleep(1)
@@ -134,3 +135,6 @@ def down_song(song, singer, filetype):
 def move_websong(song, singer, filetype):
     src = f"{song}_{singer}.{filetype}"
     shutil.copy(f"{mp3Dir}/{src}",f"{songDir}/{src}")
+
+
+#sync_sqlWebsong();
